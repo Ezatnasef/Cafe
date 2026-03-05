@@ -12,7 +12,7 @@ import { useCategories } from "@/hooks/use-categories";
 import { useSessions, useCreateSession, useAddSessionItem, useUpdateSessionItem, useDeleteSessionItem, useCheckoutSession } from "@/hooks/use-sessions";
 import { useCustomers } from "@/hooks/use-customers";
 import { useStaff } from "@/hooks/use-staff";
-import { Plus, Minus, Trash2, Search, CreditCard, Banknote, Smartphone } from "lucide-react";
+import { Plus, Minus, Trash2, Search, CreditCard, Banknote, Smartphone, UtensilsCrossed } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function POS() {
@@ -96,18 +96,18 @@ export default function POS() {
 
   return (
     <Layout>
-      <div className="flex h-[calc(100vh-8rem)] gap-6 animate-in fade-in duration-300">
+      <div className="flex h-[calc(100vh-4rem)] gap-4 animate-in fade-in duration-300 overflow-hidden">
         
         {/* Left Side - Menu Grid */}
         <div className="flex-1 flex flex-col gap-4 overflow-hidden">
           {/* Categories & Search */}
-          <div className="flex items-center justify-between gap-4 shrink-0">
-            <ScrollArea className="w-full whitespace-nowrap" orientation="horizontal">
+          <div className="flex items-center justify-between gap-4 shrink-0 flex-wrap md:flex-nowrap">
+            <ScrollArea className="w-full md:w-auto flex-1 whitespace-nowrap" orientation="horizontal">
               <div className="flex w-max space-x-2 space-x-reverse p-1">
                 <Button
                   variant={activeCategoryId === null ? "default" : "outline"}
                   onClick={() => setActiveCategoryId(null)}
-                  className={`rounded-full px-6 h-12 text-base font-bold ${activeCategoryId === null ? 'shadow-md glow-primary' : 'bg-card'}`}
+                  className={`rounded-xl px-8 h-14 text-lg font-bold ${activeCategoryId === null ? 'shadow-md glow-primary' : 'bg-card border-border/50'}`}
                 >
                   الكل
                 </Button>
@@ -116,7 +116,7 @@ export default function POS() {
                     key={cat.id}
                     variant={activeCategoryId === cat.id ? "default" : "outline"}
                     onClick={() => setActiveCategoryId(cat.id)}
-                    className={`rounded-full px-6 h-12 text-base font-bold ${activeCategoryId === cat.id ? 'shadow-md glow-primary' : 'bg-card'}`}
+                    className={`rounded-xl px-8 h-14 text-lg font-bold ${activeCategoryId === cat.id ? 'shadow-md glow-primary' : 'bg-card border-border/50'}`}
                   >
                     {cat.name}
                   </Button>
@@ -124,11 +124,11 @@ export default function POS() {
               </div>
             </ScrollArea>
             
-            <div className="relative w-64 shrink-0">
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <div className="relative w-full md:w-80 shrink-0">
+              <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground" />
               <Input 
                 placeholder="بحث عن صنف..." 
-                className="pl-4 pr-10 h-12 rounded-full bg-card border-border/50 text-base"
+                className="pl-4 pr-12 h-14 rounded-xl bg-card border-border text-lg"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -136,21 +136,20 @@ export default function POS() {
           </div>
 
           {/* Items Grid */}
-          <ScrollArea className="flex-1 pr-4">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 pb-4">
+          <ScrollArea className="flex-1 pr-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 pb-4">
               {filteredItems?.map(item => (
                 <Card 
                   key={item.id}
-                  className="cursor-pointer hover:shadow-xl hover:border-primary/50 transition-all duration-200 overflow-hidden bg-card/80 border-border/50 group touch-target aspect-square flex flex-col"
+                  className="cursor-pointer hover:shadow-2xl hover:border-primary/50 transition-all duration-300 overflow-hidden bg-card border-border/50 group touch-target flex flex-col active:scale-95"
                   onClick={() => handleItemClick(item.id)}
                 >
-                  <div className="flex-1 flex items-center justify-center p-4 bg-muted/30 group-hover:bg-primary/5 transition-colors">
-                    {/* Placeholder for item image if we had them, using icon/text for now */}
-                    <span className="text-5xl opacity-20 group-hover:text-primary group-hover:opacity-40 transition-colors">☕</span>
+                  <div className="flex-1 flex items-center justify-center p-6 bg-muted/20 group-hover:bg-primary/5 transition-colors aspect-square">
+                    <span className="text-6xl opacity-30 group-hover:text-primary group-hover:opacity-50 transition-colors">☕</span>
                   </div>
-                  <div className="p-4 border-t border-border/50 bg-card">
-                    <h3 className="font-bold text-foreground truncate">{item.name}</h3>
-                    <p className="text-primary font-black mt-1">{item.price} ج.م</p>
+                  <div className="p-4 border-t border-border/50 bg-card/50 backdrop-blur-sm">
+                    <h3 className="font-bold text-lg text-foreground truncate">{item.name}</h3>
+                    <p className="text-primary font-black text-xl mt-1">{item.price} ج.م</p>
                   </div>
                 </Card>
               ))}
@@ -159,18 +158,18 @@ export default function POS() {
         </div>
 
         {/* Right Side - Cart / Active Session */}
-        <Card className="w-96 flex flex-col bg-card/90 backdrop-blur border-border/50 shadow-2xl shrink-0 overflow-hidden">
+        <Card className="w-[400px] flex flex-col bg-card/95 backdrop-blur-md border-border shadow-2xl shrink-0 overflow-hidden rounded-3xl">
           {activeSession ? (
             <>
               {/* Cart Header */}
-              <div className="p-6 border-b border-border/50 bg-muted/20">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-xl font-bold">طلب حالي #{activeSession.id}</h3>
-                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive" onClick={() => setActiveSessionId(null)}>إلغاء التحديد</Button>
+              <div className="p-6 border-b border-border/50 bg-muted/10">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-2xl font-black">طلب حالي #{activeSession.id}</h3>
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive h-10 px-4 rounded-xl border border-border/20" onClick={() => setActiveSessionId(null)}>إلغاء التحديد</Button>
                 </div>
-                <div className="text-sm text-muted-foreground flex gap-2">
-                  <span className="bg-background px-2 py-1 rounded-md border border-border">عميل: {activeSession.customerName}</span>
-                  <span className="bg-background px-2 py-1 rounded-md border border-border">بواسطة: {staff?.find(s => s.id === activeSession.staffId)?.name || 'غير محدد'}</span>
+                <div className="flex flex-wrap gap-2">
+                  <span className="bg-primary/10 text-primary px-3 py-1.5 rounded-lg border border-primary/20 font-bold text-sm">العميل: {activeSession.customerName}</span>
+                  <span className="bg-muted/30 text-muted-foreground px-3 py-1.5 rounded-lg border border-border/50 font-medium text-sm">بواسطة: {staff?.find(s => s.id === activeSession.staffId)?.name || 'غير محدد'}</span>
                 </div>
               </div>
 
@@ -221,13 +220,13 @@ export default function POS() {
               </ScrollArea>
 
               {/* Cart Footer */}
-              <div className="p-6 border-t border-border/50 bg-background/50">
+              <div className="p-6 border-t border-border/50 bg-muted/5">
                 <div className="flex justify-between items-center mb-6">
-                  <span className="text-lg font-medium text-muted-foreground">الإجمالي</span>
-                  <span className="text-3xl font-black text-primary">{orderTotal} <span className="text-lg font-bold">ج.م</span></span>
+                  <span className="text-xl font-bold text-muted-foreground">الإجمالي</span>
+                  <span className="text-4xl font-black text-primary">{orderTotal} <span className="text-xl font-bold">ج.م</span></span>
                 </div>
                 <Button 
-                  className="w-full h-16 text-xl font-bold rounded-2xl glow-primary"
+                  className="w-full h-20 text-2xl font-black rounded-2xl glow-primary shadow-2xl shadow-primary/20 active:scale-95 transition-all"
                   disabled={!activeSession.items?.length || checkout.isPending}
                   onClick={() => setIsCheckoutOpen(true)}
                 >
@@ -237,18 +236,18 @@ export default function POS() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-gradient-to-b from-transparent to-muted/10">
-              <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-6 text-primary">
-                <UtensilsCrossed className="w-12 h-12" />
+              <div className="w-28 h-28 rounded-3xl bg-primary/10 flex items-center justify-center mb-8 text-primary shadow-inner">
+                <UtensilsCrossed className="w-14 h-14" />
               </div>
-              <h3 className="text-xl font-bold mb-2">لا يوجد طلب محدد</h3>
-              <p className="text-muted-foreground mb-8">اختر طلباً حالياً أو قم بإنشاء طلب جديد للبدء</p>
+              <h3 className="text-2xl font-black mb-3">لا يوجد طلب محدد</h3>
+              <p className="text-muted-foreground text-lg mb-10 max-w-[250px]">اختر طلباً حالياً أو قم بإنشاء طلب جديد للبدء</p>
               
               <Button 
                 size="lg" 
-                className="w-full h-14 rounded-xl text-lg glow-primary"
+                className="w-full h-16 rounded-2xl text-xl font-bold glow-primary shadow-xl shadow-primary/10 active:scale-95 transition-all"
                 onClick={() => setIsNewSessionOpen(true)}
               >
-                <Plus className="w-5 h-5 ml-2" /> طلب جديد
+                <Plus className="w-6 h-6 ml-3" /> طلب جديد
               </Button>
 
               {sessions && sessions.length > 0 && (
